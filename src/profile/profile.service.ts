@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Profile } from './entities/profile.entity';
 
 @Injectable()
 export class ProfileService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+  constructor(@InjectModel(Profile.name) private profileModel: Model<Profile>) {}
+
+  async createProfile(profileData): Promise<any> {
+    const profile = new this.profileModel(profileData);
+    await profile.save();
+    return { status: 'success', message: 'Create profile success', data: profile };
   }
 
-  findAll() {
-    return `This action returns all profile`;
+  async getProfile(userId: string): Promise<any> {
+    const profile = await this.profileModel.findOne({ userId });
+    return { status: 'success', message: 'Get profile success', data: profile };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
-  }
-
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+  async updateProfile(userId: string, profileData): Promise<any> {
+    const profile = await this.profileModel.findOneAndUpdate({ userId }, profileData, { new: true });
+    return { status: 'success', message: 'Update profile success', data: profile };
   }
 }

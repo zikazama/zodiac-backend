@@ -1,34 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, UseGuards, Request, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('profile')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(private profileService: ProfileService) {}
 
-  @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(createProfileDto);
+  @UseGuards(JwtAuthGuard)
+  @Post('create')
+  @UseInterceptors(FileInterceptor('image'))
+  async createProfile(@UploadedFile() file, @Body() body, @Request() req) {
+    const profileData = {
+      ...body,
+      userId: req.user.userId,
+      imagePath: file.path,
+    };
+    return this.profileService.createProfile(profileData);
   }
 
-  @Get()
-  findAll() {
-    return this.profileService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('get')
+  async getProfile(@Request() req) {
+    return this.profileService.getProfile(req.user.userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(+id, updateProfileDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @Put('update')
+  @UseInterceptors(FileInterceptor('image'))
+  async updateProfile(@UploadedFile() file, @Body() body, @Request() req) {
+    const profileData = {
+      ...body,
+      userId: req.user.userId,
+      imagePath: file ? file.path : undefined,
+    };
+    return this.profileService.updateProfile(req.user.userId, profileData);
   }
 }
