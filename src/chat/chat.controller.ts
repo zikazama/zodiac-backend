@@ -10,9 +10,10 @@ export class ChatController {
   @Post('send')
   async sendMessage(@Body() body, @Request() req) {
     const chatData = {
-      fromUserId: req.user.userId,
-      toUserId: body.toUserId,
+      fromUsername: req.user.username,
+      toUsername: body.toUsername,
       message: body.message,
+      createdAt: new Date(),
     };
     return this.chatService.sendMessage(chatData);
   }
@@ -20,6 +21,6 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @Post('view')
   async viewMessages(@Body() body, @Request() req) {
-    return this.chatService.viewMessages(req.user.userId, body.toUserId);
+    return this.chatService.viewMessages(req.user, body.toUsername);
   }
 }

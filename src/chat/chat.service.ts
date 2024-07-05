@@ -18,11 +18,11 @@ export class ChatService {
     return { status: 'success', message: 'Message sent', data: chat };
   }
 
-  async viewMessages(userId: string, toUserId: string): Promise<any> {
+  async viewMessages(user, toUsername: string): Promise<any> {
     const messages = await this.chatModel.find({
       $or: [
-        { fromUserId: userId, toUserId },
-        { fromUserId: toUserId, toUserId: userId },
+        { fromUsername: user.username, toUsername },
+        { fromUsername: toUsername, toUsername: user.username },
       ]
     }).exec();
     return { status: 'success', message: 'Get messages success', data: messages };

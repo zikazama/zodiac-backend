@@ -3,14 +3,17 @@ import { Document, Types } from 'mongoose';
 
 @Schema()
 export class Chat extends Document {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  fromUserId: string;
+  @Prop({ required: true })
+  fromUsername: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  toUserId: string;
+  @Prop({ required: true })
+  toUsername: string;
 
   @Prop({ required: true })
   message: string;
+
+  @Prop({ required: true })
+  createdAt: Date;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

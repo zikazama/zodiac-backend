@@ -20,7 +20,7 @@ import { DecodeTokenMiddleware } from './decode.middleware';
     // }),
     AuthModule,
     ProfileModule,
-    // ChatModule,
+    ChatModule,
   ],
 })
 export class AppModule {
