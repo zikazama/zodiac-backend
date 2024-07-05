@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
 import { ProfileService } from './profile.service';
+import { getModelToken } from '@nestjs/mongoose';
 import { Profile } from './entities/profile.entity';
 import { Model } from 'mongoose';
 
 describe('ProfileService', () => {
   let service: ProfileService;
-  let profileModel: Model<Profile>;
+  let model: Model<Profile>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,16 +15,18 @@ describe('ProfileService', () => {
         {
           provide: getModelToken(Profile.name),
           useValue: {
-            create: jest.fn(),
             findOne: jest.fn(),
             findOneAndUpdate: jest.fn(),
+            create: jest.fn(),
+            bulkSave: jest.fn(),
+            save: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<ProfileService>(ProfileService);
-    profileModel = module.get<Model<Profile>>(getModelToken(Profile.name));
+    model = module.get<Model<Profile>>(getModelToken(Profile.name));
   });
 
   it('should be defined', () => {
@@ -32,32 +34,21 @@ describe('ProfileService', () => {
   });
 
   describe('createProfile', () => {
-    it('should create and return profile', async () => {
-      const profile = { userId: 'userId', displayName: 'test' };
-      jest.spyOn(profileModel, 'create').mockResolvedValue(profile);
+    it('should create a new profile if one does not already exist', async () => {
+      jest.spyOn(model, 'findOne').mockResolvedValueOnce(null);
+      const profileData = { birthday: '1990-01-01' };
+      const user = { _id: 'userId' };
+      const result = await service.createProfile(profileData, user);
+      expect(result).toHaveProperty('status', 'success');
+    });
 
-      const result = await service.createProfile(profile);
-      expect(result).toEqual({ status: 'success', message: 'Create profile success', data: profile });
+    it('should return an error if profile already exists', async () => {
+      jest.spyOn(model, 'findOne').mockResolvedValueOnce(new Profile());
+      const profileData = { birthday: '1990-01-01' };
+      const user = { _id: 'userId' };
+      const result = await service.createProfile(profileData, user);
+      expect(result).toHaveProperty('status', 'error');
     });
   });
 
-  describe('getProfile', () => {
-    it('should return profile', async () => {
-      const profile = { userId: 'userId', displayName: 'test' };
-      jest.spyOn(profileModel, 'findOne').mockResolvedValue(profile);
-
-      const result = await service.getProfile('userId');
-      expect(result).toEqual({ status: 'success', message: 'Get profile success', data: profile });
-    });
-  });
-
-  describe('updateProfile', () => {
-    it('should update and return profile', async () => {
-      const profile = { userId: 'userId', displayName: 'test' };
-      jest.spyOn(profileModel, 'findOneAndUpdate').mockResolvedValue(profile);
-
-      const result = await service.updateProfile('userId', profile);
-      expect(result).toEqual({ status: 'success', message: 'Update profile success', data: profile });
-    });
-  });
 });

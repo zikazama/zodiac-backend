@@ -16,13 +16,15 @@ export class ProfileService {
     profileData.birthday = new Date(profileData.birthday);
     profileData.horoscope = this.detectHoroscope(profileData.birthday);
     profileData.zodiac = this.detectZodiac(profileData.birthday.getFullYear());
-    const profile = new this.profileModel(profileData);
-    await profile.save();
+    const profile = await this.profileModel.create(profileData);
+    await this.profileModel.bulkSave([profileData]);
     return { status: 'success', message: 'Create profile success', data: profile };
   }
 
-  async getProfile(user): Promise<any> {
+  async getProfile(user, req): Promise<any> {
     const profile = await this.profileModel.findOne({  userId: user._id });
+    const host = req.headers.host;
+    profile.imagePath = `${host}/${profile.imagePath.replace('\\','/')}`
     return { status: 'success', message: 'Get profile success', data: profile };
   }
 

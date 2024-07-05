@@ -12,7 +12,7 @@ import { Server, Socket } from 'socket.io';
 import { UnauthorizedException } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/auth/entities/auth.entity';
+import { User } from '../auth/entities/auth.entity';
 import { ChatMessageDto } from './dto/chat-message.dto';
 
 @WebSocketGateway({
@@ -23,7 +23,7 @@ import { ChatMessageDto } from './dto/chat-message.dto';
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private clients: Map<string, string> = new Map();
+  public clients: Map<string, string> = new Map();
 
   constructor(private chatService: ChatService,
     private readonly jwtService: JwtService,

@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 describe('AuthController', () => {
-  let controller: AuthController;
+  let authController: AuthController;
   let authService: AuthService;
 
   beforeEach(async () => {
@@ -13,36 +15,50 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            register: jest.fn(),
-            login: jest.fn(),
+            register: jest.fn().mockResolvedValue('mockRegisterResult'),
+            login: jest.fn().mockResolvedValue('mockLoginResult'),
           },
         },
       ],
     }).compile();
 
-    controller = module.get<AuthController>(AuthController);
+    authController = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(authController).toBeDefined();
   });
 
   describe('register', () => {
-    it('should call authService.register and return result', async () => {
-      const result = { status: 'success', message: 'Registration success' };
-      jest.spyOn(authService, 'register').mockResolvedValue(result);
+    it('should call AuthService.register with correct parameters', async () => {
+      const registerDto = new RegisterDto();
+      registerDto.username = 'testUser';
+      registerDto.password = 'testPass';
+      registerDto.email = 'test@example.com';
 
-      expect(await controller.register({ username: 'test', password: 'password' })).toBe(result);
+      await authController.register(registerDto);
+
+      expect(authService.register).toHaveBeenCalledWith(
+        registerDto.username,
+        registerDto.password,
+        registerDto.email,
+      );
     });
   });
 
   describe('login', () => {
-    it('should call authService.login and return result', async () => {
-      const result = { status: 'success', message: 'Login success', data: { token: 'token' } };
-      jest.spyOn(authService, 'login').mockResolvedValue(result);
+    it('should call AuthService.login with correct parameters', async () => {
+      const loginDto = new LoginDto();
+      loginDto.usernameOrEmail = 'testUserOrEmail';
+      loginDto.password = 'testPass';
 
-      expect(await controller.login({ username: 'test', password: 'password' })).toBe(result);
+      await authController.login(loginDto);
+
+      expect(authService.login).toHaveBeenCalledWith(
+        loginDto.usernameOrEmail,
+        loginDto.password,
+      );
     });
   });
 });

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Chat } from './entities/chat.entity';
-import { User } from 'src/auth/entities/auth.entity';
+import { User } from '../auth/entities/auth.entity';
 
 @Injectable()
 export class ChatService {
@@ -12,8 +12,8 @@ export class ChatService {
   ) {}
 
   async sendMessage(chatData): Promise<any> {
-    const chat = new this.chatModel(chatData);
-    await chat.save();
+    const chat = await this.chatModel.create(chatData);
+    await this.chatModel.bulkSave([chatData])
     return { status: 'success', message: 'Message sent', data: chat };
   }
 

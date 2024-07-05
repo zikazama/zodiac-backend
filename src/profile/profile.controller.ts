@@ -36,7 +36,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @Get('get')
   async getProfile(@Request() req) {
-    return this.profileService.getProfile(req.user);
+    return this.profileService.getProfile(req.user, req);
   }
 
   @UseGuards(JwtAuthGuard)

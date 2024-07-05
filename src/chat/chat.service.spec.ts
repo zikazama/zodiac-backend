@@ -1,14 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
 import { ChatService } from './chat.service';
+import { getModelToken } from '@nestjs/mongoose';
 import { Chat } from './entities/chat.entity';
-import { AmqpConnection } from '@nestjs-plus/rabbitmq';
+import { User } from '../auth/entities/auth.entity';
 import { Model } from 'mongoose';
 
 describe('ChatService', () => {
   let service: ChatService;
   let chatModel: Model<Chat>;
-  let amqpConnection: AmqpConnection;
+  let userModel: Model<User>;
+
+  // Mock chat and user data
+  const chatData = { message: 'Hello', fromUsername: 'user1', toUsername: 'user2' };
+  const userData = { username: 'user1', _id: 'userId' };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,14 +21,18 @@ describe('ChatService', () => {
         {
           provide: getModelToken(Chat.name),
           useValue: {
+            new: jest.fn().mockResolvedValue(chatData),
+            constructor: jest.fn().mockResolvedValue(chatData),
+            save: jest.fn(),
             create: jest.fn(),
+            bulkSave: jest.fn(),
             find: jest.fn(),
           },
         },
         {
-          provide: AmqpConnection,
+          provide: getModelToken(User.name),
           useValue: {
-            publish: jest.fn(),
+            findById: jest.fn().mockResolvedValue(userData),
           },
         },
       ],
@@ -32,7 +40,7 @@ describe('ChatService', () => {
 
     service = module.get<ChatService>(ChatService);
     chatModel = module.get<Model<Chat>>(getModelToken(Chat.name));
-    amqpConnection = module.get<AmqpConnection>(AmqpConnection);
+    userModel = module.get<Model<User>>(getModelToken(User.name));
   });
 
   it('should be defined', () => {
@@ -40,26 +48,24 @@ describe('ChatService', () => {
   });
 
   describe('sendMessage', () => {
-    it('should create and return chat message', async () => {
-      const chat = { fromUserId: 'user1', toUserId: 'user2', message: 'hello' };
-      jest.spyOn(chatModel, 'create').mockResolvedValue(chat);
-
-      const result = await service.sendMessage(chat);
-      expect(result).toEqual({ status: 'success', message: 'Message sent', data: chat });
-      expect(amqpConnection.publish).toHaveBeenCalled();
+    it('should save a message and return success', async () => {
+      const result = await service.sendMessage(chatData);
+      expect(result).toEqual({ status: 'success', message: 'Message sent', data: chatData });
     });
   });
 
   describe('viewMessages', () => {
-    it('should return chat messages', async () => {
-      const chats = [
-        { fromUserId: 'user1', toUserId: 'user2', message: 'hello' },
-        { fromUserId: 'user2', toUserId: 'user1', message: 'hi' },
-      ];
-      jest.spyOn(chatModel, 'find').mockResolvedValue(chats);
+    it('should return messages', async () => {
+      jest.spyOn(chatModel, 'find').mockResolvedValueOnce([chatData]);
+      const result = await service.viewMessages(userData, 'user2');
+      expect(result).toEqual({ status: 'success', message: 'Get messages success', data: [chatData] });
+    });
+  });
 
-      const result = await service.viewMessages('user1', 'user2');
-      expect(result).toEqual({ status: 'success', message: 'Get messages success', data: chats });
+  describe('validateUser', () => {
+    it('should validate and return user data', async () => {
+      const result = await service.validateUser('userId');
+      expect(result).toEqual(userData);
     });
   });
 });
