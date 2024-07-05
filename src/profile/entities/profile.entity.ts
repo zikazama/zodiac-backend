@@ -6,7 +6,7 @@ enum Gender {
   Female = 'female',
 }
 
-enum Horoscope {
+export enum Horoscope {
   Aries = 'Aries',
   Taurus = 'Taurus',
   Gemini = 'Gemini',
@@ -21,7 +21,7 @@ enum Horoscope {
   Pisces = 'Pisces',
 }
 
-enum Zodiac {
+export enum Zodiac {
   Rat = 'Rat',
   Ox = 'Ox',
   Tiger = 'Tiger',
