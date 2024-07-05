@@ -9,10 +9,11 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { UnauthorizedException, UseGuards } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/auth/entities/auth.entity';
+import { ChatMessageDto } from './dto/chat-message.dto';
 
 @WebSocketGateway({
   cors: {
@@ -60,7 +61,8 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ) {
     const user = client.data.user;
-    const payload = { user, message: JSON.parse(message) };
+    const messageDto: ChatMessageDto = JSON.parse(message);
+    const payload = { user, message: messageDto };
     payload.message.fromUsername = user.username;
     payload.message.createdAt = new Date();
     const targetSocketUsername = this.clients.get(payload.message.toUsername); 

@@ -5,6 +5,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { InterestService } from './interest.service';
+import { CreateProfileDto } from './dto/create-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateInterestDto } from './dto/update-interest.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -21,7 +24,7 @@ export class ProfileController {
       }
     })
   }))
-  async createProfile(@UploadedFile() file, @Body() body, @Request() req) {
+  async createProfile(@UploadedFile() file, @Body() body: CreateProfileDto, @Request() req) {
     const profileData = {
       ...body,
       userId: req.user._id,
@@ -47,7 +50,7 @@ export class ProfileController {
       }
     })
   }))
-  async updateProfile(@UploadedFile() file, @Body() body, @Request() req) {
+  async updateProfile(@UploadedFile() file, @Body() body: UpdateProfileDto, @Request() req) {
     const profileData = {
       ...body,
       userId: req.user._id,
@@ -58,7 +61,7 @@ export class ProfileController {
 
   @UseGuards(JwtAuthGuard)
   @Put('update/interest')
-  async updateInterest(@Body() body, @Request() req) {
+  async updateInterest(@Body() body: UpdateInterestDto, @Request() req) {
     const interestData = {
       ...body,
       userId: req.user._id,
