@@ -7,7 +7,11 @@ import { Profile } from './entities/profile.entity';
 export class ProfileService {
   constructor(@InjectModel(Profile.name) private profileModel: Model<Profile>) {}
 
-  async createProfile(profileData): Promise<any> {
+  async createProfile(profileData, user): Promise<any> {
+    const checkProfile = await this.profileModel.findOne({ _id: user.userId });
+    if(checkProfile){
+      return { status: 'error', message: 'Profile already exists', data: null };
+    }
     const profile = new this.profileModel(profileData);
     await profile.save();
     return { status: 'success', message: 'Create profile success', data: profile };

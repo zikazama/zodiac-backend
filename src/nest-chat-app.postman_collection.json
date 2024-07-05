@@ -1,0 +1,266 @@
+{
+    "info": {
+      "name": "Nest Chat App API",
+      "description": "API Endpoints for Nest Chat App",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Auth",
+        "item": [
+          {
+            "name": "Register",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"email\": \"user@gmail.com\",\n\t\"username\": \"user\",\n\t\"password\": \"123456\",\n\t\"passwordConfirm\": \"123456\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "http://localhost:3000/auth/register",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["auth", "register"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"usernameOrEmail\": \"user\",\n\t\"password\": \"123456\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "http://localhost:3000/auth/login",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["auth", "login"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Profile",
+        "item": [
+          {
+            "name": "Create Profile",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "image",
+                    "type": "file",
+                    "src": ""
+                  },
+                  {
+                    "key": "displayName",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "gender",
+                    "value": "male",
+                    "type": "text"
+                  },
+                  {
+                    "key": "birthday",
+                    "value": "1998-01-19",
+                    "type": "text"
+                  },
+                  {
+                    "key": "height",
+                    "value": "165",
+                    "type": "text"
+                  },
+                  {
+                    "key": "weight",
+                    "value": "70",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:3000/profile/create",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["profile", "create"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Get Profile",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "type": "text"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:3000/profile/get",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["profile", "get"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Update Profile",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "image",
+                    "type": "file",
+                    "src": ""
+                  },
+                  {
+                    "key": "displayName",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "gender",
+                    "value": "male",
+                    "type": "text"
+                  },
+                  {
+                    "key": "birthday",
+                    "value": "1998-01-19",
+                    "type": "text"
+                  },
+                  {
+                    "key": "height",
+                    "value": "165",
+                    "type": "text"
+                  },
+                  {
+                    "key": "weight",
+                    "value": "70",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:3000/profile/update",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["profile", "update"]
+              }
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Chat",
+        "item": [
+          {
+            "name": "View Messages",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"toUserId\": \"xxxx-xxxx-xxxx-xxxx\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "http://localhost:3000/chat/view",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["chat", "view"]
+              }
+            },
+            "response": []
+          },
+          {
+            "name": "Send Message",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "type": "text"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"toUserId\": \"xxxx-xxxx-xxxx-xxxx\",\n\t\"message\": \"this is message\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              },
+              "url": {
+                "raw": "http://localhost:3000/chat/send",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": ["chat", "send"]
+              }
+            },
+            "response": []
+          }
+        ]
+      }
+    ]
+  }
+  

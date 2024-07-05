@@ -8,12 +8,32 @@ enum Gender {
 
 enum Horoscope {
   Aries = 'Aries',
-  //... other signs
+  Taurus = 'Taurus',
+  Gemini = 'Gemini',
+  Cancer = 'Cancer',
+  Leo = 'Leo',
+  Virgo = 'Virgo',
+  Libra = 'Libra',
+  Scorpio = 'Scorpio',
+  Sagittarius = 'Sagittarius',
+  Capricorn = 'Capricorn',
+  Aquarius = 'Aquarius',
+  Pisces = 'Pisces',
 }
 
 enum Zodiac {
   Rat = 'Rat',
-  //... other signs
+  Ox = 'Ox',
+  Tiger = 'Tiger',
+  Rabbit = 'Rabbit',
+  Dragon = 'Dragon',
+  Snake = 'Snake',
+  Horse = 'Horse',
+  Goat = 'Goat',
+  Monkey = 'Monkey',
+  Rooster = 'Rooster',
+  Dog = 'Dog',
+  Pig = 'Pig',
 }
 
 @Schema()

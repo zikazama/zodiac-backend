@@ -16,7 +16,7 @@ export class ProfileController {
       userId: req.user.userId,
       imagePath: file.path,
     };
-    return this.profileService.createProfile(profileData);
+    return this.profileService.createProfile(profileData, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
