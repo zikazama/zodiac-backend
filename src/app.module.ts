@@ -10,7 +10,7 @@ import { DecodeTokenMiddleware } from './decode.middleware';
   imports: [
     MongooseModule.forRoot('mongodb://localhost/horoscope'),
     // RabbitMQModule.forRoot({
-    //   uri: 'amqp://localhost:5672',
+    //   uri: 'amqp://guest:guest@localhost:15672',
     //   exchanges: [
     //     {
     //       name: 'chat_exchange',
