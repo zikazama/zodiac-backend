@@ -8,7 +8,7 @@ import { DecodeTokenMiddleware } from './decode.middleware';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot('mongodb://localhost/horoscope'),
     // RabbitMQModule.forRoot({
     //   uri: 'amqp://localhost:5672',
     //   exchanges: [

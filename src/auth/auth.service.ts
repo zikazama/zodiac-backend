@@ -13,6 +13,15 @@ export class AuthService {
   ) { }
 
   async register(username: string, password: string, email: string): Promise<any> {
+    const checkUser = await this.userModel.findOne({
+      $or: [
+        { username: username },
+        { email: email }
+      ]
+    });
+    if (checkUser) {
+      return { status: 'error', message: 'Username or email already exists' };
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new this.userModel({ username, password: hashedPassword, email });
     await user.save();

@@ -8,7 +8,7 @@ export class ProfileService {
   constructor(@InjectModel(Profile.name) private profileModel: Model<Profile>) {}
 
   async createProfile(profileData, user): Promise<any> {
-    const checkProfile = await this.profileModel.findOne({ email: user.email });
+    const checkProfile = await this.profileModel.findOne({  userId: user._id });
     if(checkProfile){
       return { status: 'error', message: 'Profile already exists', data: null };
     }
@@ -22,7 +22,7 @@ export class ProfileService {
   }
 
   async getProfile(user): Promise<any> {
-    const profile = await this.profileModel.findOne({ email: user.email });
+    const profile = await this.profileModel.findOne({  userId: user._id });
     return { status: 'success', message: 'Get profile success', data: profile };
   }
 
@@ -31,7 +31,7 @@ export class ProfileService {
     profileData.birthday = new Date(profileData.birthday);
     profileData.horoscope = this.detectHoroscope(profileData.birthday);
     profileData.zodiac = this.detectZodiac(profileData.birthday.getFullYear());
-    const profile = await this.profileModel.findOneAndUpdate({ email: user.email }, profileData, { new: true });
+    const profile = await this.profileModel.findOneAndUpdate({ userId: user._id }, profileData, { new: true });
     return { status: 'success', message: 'Update profile success', data: profile };
   }
 
@@ -64,7 +64,6 @@ export class ProfileService {
     } else if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) {
       return Horoscope.Pisces;
     } else {
-      // This case should not happen
       return null;
     }
   }
@@ -86,7 +85,6 @@ export class ProfileService {
     ];
   
     if (year < 1900) {
-      // Chinese zodiac calculation is not accurate before 1900
       return null;
     }
   
