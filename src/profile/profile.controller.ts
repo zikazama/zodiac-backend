@@ -4,10 +4,11 @@ import { ProfileService } from './profile.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { InterestService } from './interest.service';
 
 @Controller('profile')
 export class ProfileController {
-  constructor(private profileService: ProfileService) {}
+  constructor(private profileService: ProfileService, private interestService: InterestService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
@@ -53,5 +54,15 @@ export class ProfileController {
       imagePath: file ? file.path : undefined,
     };
     return this.profileService.updateProfile(req.user, profileData);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('update/interest')
+  async updateInterest(@Body() body, @Request() req) {
+    const interestData = {
+      ...body,
+      userId: req.user._id,
+    };
+    return this.interestService.updateInterest(req.user, interestData);
   }
 }
